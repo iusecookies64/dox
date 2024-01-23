@@ -9,7 +9,6 @@ export default function DocumentsPreviev({ documentObject, indx }) {
   const username = useRecoilValue(userAtom);
   const [isEditing, setEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(documentObject.title);
-  const inputRef = useRef();
   const navigate = useNavigate();
 
   function goToPage() {
@@ -74,7 +73,6 @@ export default function DocumentsPreviev({ documentObject, indx }) {
       ></div>
       {isEditing ? (
         <input
-          ref={inputRef}
           autoFocus
           type="text"
           placeholder="Title Value"
@@ -94,7 +92,6 @@ export default function DocumentsPreviev({ documentObject, indx }) {
           onClick={() => {
             if (username != documentObject.owner) return;
             setEditing(true);
-            inputRef.current.focus();
           }}
         >
           {newTitle}
