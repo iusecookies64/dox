@@ -105,7 +105,7 @@ function TextEditor() {
   // setting up socket server & getting document data from server
   useEffect(() => {
     if (!username) return;
-    const s = io("http://localhost:3000");
+    const s = io("https://dox.iusecookies64.xyz");
     setSocket(s);
 
     // when connected getting document data

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { documentsAtom, tokenAtom, userAtom } from "./atoms";
 import Cookies from "universal-cookie";
@@ -8,9 +8,11 @@ import Quill from "quill";
 
 export default function Landing() {
   const cookies = new Cookies();
+  const inputRef = useRef();
   const user = useRecoilValue(userAtom);
   const setToken = useSetRecoilState(tokenAtom);
   const [documents, setDocuments] = useRecoilState(documentsAtom);
+  const [error, setError] = useState("");
 
   function logout() {
     // handling logout
@@ -33,6 +35,17 @@ export default function Landing() {
     }
   }
 
+  function addDocument() {
+    const id = inputRef.current.value;
+    inputRef.current.value = "";
+    axios
+      .get(`/api/document/${id}`)
+      .then((response) => {
+        setDocuments([response.data, ...documents]);
+      })
+      .catch((err) => console.log(err));
+  }
+
   useEffect(() => {
     // getting all the documents data from server
     axios
@@ -41,6 +54,7 @@ export default function Landing() {
         setDocuments(response.data);
       })
       .catch((err) => {
+        setError("Invalid Document");
         console.log(err);
       });
   }, []);
@@ -60,6 +74,21 @@ export default function Landing() {
         </div>
       </div>
       {/* top bar end */}
+      <div className="p-4 mb-4">
+        <input
+          ref={inputRef}
+          className="p-2 outline-none border-none shadow-sm mr-4"
+          type="text"
+          placeholder="Enter Document Id"
+          onKeyDown={(e) => {
+            if (e.key == "Enter") {
+              addDocument();
+            }
+          }}
+        />
+        <button onClick={addDocument}>Add Document</button>
+        {error && <div className="text-red-500 text-sm">{error}</div>}
+      </div>
       <div className="p-4 text-lg">
         <div className="mb-4">Previous Documents</div>
         <div className="flex flex-wrap">
