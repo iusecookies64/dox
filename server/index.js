@@ -70,6 +70,15 @@ app.get("/api/document/:id", authorizeUser, async (req, res) => {
     const documentObj = await Document.findById(id);
     if (!documentObj) throw Error();
     res.json(documentObj);
+
+    // checking if this document is there in userDocuments
+    const indx = userDocument.documents.findIndex(
+      (documentId) => documentId == id
+    );
+    if (indx == -1) {
+      userDocument.documents.unshift(id);
+      userDocument.save();
+    }
   } catch (err) {
     res.status(500).send("Document Not Found");
   }
