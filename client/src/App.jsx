@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import TextEditor from "./TextEditor";
 import { Routes, Route } from "react-router-dom";
 import Home from "./Home";
-import { userAtom, tokenAtom, documentsAtom } from "./atoms";
+import { userAtom, tokenAtom } from "./atoms";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";

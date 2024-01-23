@@ -196,7 +196,7 @@ function TextEditor() {
       ) : (
         <div>Loading</div>
       )}
-      <div className="fixed top-0 right-0 p-6">
+      <div className="fixed top-0 right-0 p-6 z-100">
         {documentObject && (
           <div>
             <div className="mb-4">

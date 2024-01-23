@@ -119,6 +119,14 @@ app.post("/api/document/save", authorizeUser, async (req, res) => {
   res.send();
 });
 
+app.post("/api/document/update-title", authorizeUser, async (req, res) => {
+  const { documentId, newTitle } = req.body;
+  const documentObj = await Document.findById(documentId);
+  documentObj.title = newTitle;
+  documentObj.save();
+  res.json({});
+});
+
 server.listen(port, (err) => {
   if (err) {
     console.log(err);
