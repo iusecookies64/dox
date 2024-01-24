@@ -172,7 +172,8 @@ function TextEditor() {
   useEffect(() => {
     if (!socket || !quill) return;
     const interval = setInterval(() => {
-      socket.emit("update-db", documentId, quill.getContents());
+      documentObject.data = quill.getContents();
+      socket.emit("update-db", documentId, documentObject.data);
     });
 
     return () => clearInterval(interval);
