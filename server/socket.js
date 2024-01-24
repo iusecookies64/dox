@@ -50,11 +50,11 @@ function socketHandler(socket) {
   });
 
   socket.on("give-access", async (documentId, username) => {
-    socket.to(documentId).emit("new-editor", username);
-    socket.emit("new-editor", username);
     // saving username as an editor
     const documentObj = await Document.findById(documentId);
     documentObj.editors.push(username);
+    socket.to(documentId).emit("new-editor", documentObj);
+    socket.emit("new-editor", documentObj);
     documentObj.save();
   });
 }

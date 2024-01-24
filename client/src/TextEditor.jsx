@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "quill/dist/quill.snow.css";
 import Quill from "quill";
 import { useRecoilValue } from "recoil";
@@ -33,16 +33,17 @@ function TextEditor() {
   const [showModal, setModal] = useState(false);
   const [modalMessage, setMessage] = useState("");
   const [responseFunction, setResponseFunction] = useState(null);
-  const editorStyles =
-    "outline-none bg-white w-[8.5in] min-h-[11in] p-[1in] m-4 shadow-lg print:shadow-none";
-  const containerStyles =
-    "min-h-dvh min-w-dvw border-none outline-none flex items-center justify-center ";
-  const toolbatStyles =
-    "sticky top-0 left-0 bg-slate-100 z-10 shadow-lg min-w-dvw print:hidden print:w-[6.5in] print:h-[9in] print:p-0 print:m-0 print:self-start";
   const addEditor = useCallback(
     (container) => {
       // if container not yer defined return
       if (!container) return;
+
+      const editorStyles =
+        "outline-none bg-white w-[8.5in] min-h-[11in] p-[1in] m-4 shadow-lg print:shadow-none";
+      const containerStyles =
+        "min-h-dvh min-w-dvw border-none outline-none flex items-center justify-center ";
+      const toolbatStyles =
+        "sticky top-0 left-0 bg-slate-100 z-10 shadow-lg min-w-dvw print:hidden print:w-[6.5in] print:h-[9in] print:p-0 print:m-0 print:self-start";
 
       // removing all previous html
       container.innerHTML = "";
@@ -93,14 +94,6 @@ function TextEditor() {
     },
     [documentObject, isEditor]
   );
-
-  // checking if username is defined after 2 sec, if not then navigate back to home to login
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!username) navigate("/");
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [username]);
 
   // setting up socket server & getting document data from server
   useEffect(() => {
@@ -155,16 +148,14 @@ function TextEditor() {
       });
     }
 
-    socket.on("new-editor", (editorName) => {
-      if (editorName == username) {
+    socket.on("new-editor", (newDocumentObject) => {
+      setObject(newDocumentObject);
+      const indx = newDocumentObject.editors.findIndex(
+        (editor) => editor == username
+      );
+      if (indx != -1) {
         setEditor(true);
       }
-      setObject((oldObject) => {
-        return {
-          ...oldObject,
-          editors: [...oldObject.editors, editorName],
-        };
-      });
     });
   }, [socket, quill]);
 
@@ -172,8 +163,7 @@ function TextEditor() {
   useEffect(() => {
     if (!socket || !quill) return;
     const interval = setInterval(() => {
-      documentObject.data = quill.getContents();
-      socket.emit("update-db", documentId, documentObject.data);
+      socket.emit("update-db", documentId, quill.getContents());
     });
 
     return () => clearInterval(interval);

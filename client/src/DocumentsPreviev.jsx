@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { userAtom } from "./atoms";
 import axios from "axios";
 
-export default function DocumentsPreviev({ documentObject, indx }) {
+export default function DocumentsPreviev({ documentObject }) {
   const username = useRecoilValue(userAtom);
   const [isEditing, setEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(documentObject.title);
@@ -38,7 +38,7 @@ export default function DocumentsPreviev({ documentObject, indx }) {
   useEffect(() => {
     const containerStyles =
       "bg-white text-[4px] min-h-48 min-w-36 absolute top-0 left-0 overflow-hidden";
-    const container = document.getElementById(`quill-${indx}`);
+    const container = document.getElementById(`quill-${documentObject["_id"]}`);
     container.innerHTML = "";
     const element = document.createElement("div");
     container.append(element);
@@ -64,7 +64,7 @@ export default function DocumentsPreviev({ documentObject, indx }) {
   return (
     <div className="flex flex-col items-center cursor-pointer hover:bg-slate-300 mx-6 p-2 overflow-hidden relative">
       <div
-        id={`quill-${indx}`}
+        id={`quill-${documentObject["_id"]}`}
         className="h-48 w-36 relative overflow-hidden shadow-sm"
       ></div>
       <div

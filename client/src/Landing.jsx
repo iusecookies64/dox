@@ -22,14 +22,18 @@ export default function Landing() {
   async function createDocument() {
     try {
       const container = document.getElementById("quill-container");
+      container.innerHTML = "";
       const element = document.createElement("div");
       container.append(element);
       const quill = new Quill(element, { theme: "snow" });
       const response = await axios.post(
         "/api/document/create",
-        quill.getContents()
+        quill.getContents() // empty quill for initial data of document
       );
-      setDocuments([response.data, ...documents]);
+      setDocuments((oldList) => {
+        const newList = [response.data, ...oldList];
+        return newList;
+      });
     } catch (err) {
       console.log(err);
     }
@@ -104,7 +108,7 @@ export default function Landing() {
           {documents.map((documentObject, indx) => {
             return (
               <DocumentsPreviev
-                key={indx}
+                key={documentObject["_id"]}
                 documentObject={documentObject}
                 indx={indx}
               />

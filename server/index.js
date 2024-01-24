@@ -127,6 +127,10 @@ app.post("/api/document/update-title", authorizeUser, async (req, res) => {
   res.json({});
 });
 
+app.all("*", (req, res) => {
+  res.redirect("/");
+});
+
 server.listen(port, (err) => {
   if (err) {
     console.log(err);
